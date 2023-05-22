@@ -1,9 +1,13 @@
 const express = require("express");
+const cors = require("cors");
 const mongoose = require("mongoose");
 const TarefasModel = require("./models/TarefasModel");
 
 const app = express();
 app.use(express.json());
+
+// Configurar o CORS
+app.use(cors());
 
 // Configuração da conexão com o MongoDB
 mongoose
@@ -30,9 +34,9 @@ app.get("/tarefas", async (req, res) => {
 
 // Rota para criar uma nova tarefa
 app.post("/tarefas", async (req, res) => {
-  const { description } = req.body;
+  const { descricao, prioridade } = req.body;
   try {
-    const tarefas = new TarefasModel({ description });
+    const tarefas = new TarefasModel({ descricao, prioridade });
     await tarefas.save();
     res.json(tarefas);
   } catch (error) {
@@ -44,11 +48,11 @@ app.post("/tarefas", async (req, res) => {
 // Rota para atualizar uma tarefa
 app.put("/tarefas/:id", async (req, res) => {
   const { id } = req.params;
-  const { description } = req.body;
+  const { descricao, prioridade } = req.body;
   try {
     const tarefas = await TarefasModel.findByIdAndUpdate(
       id,
-      { description },
+      { descricao, prioridade },
       { new: true }
     );
     res.json(tarefas);
